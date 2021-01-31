@@ -1,5 +1,15 @@
-.App {
+.Table {
   margin: 0 auto;
   max-width: 700px;
   padding: 0 16px;
+}
+
+.Selected-names {
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+}
+
+.MuiDataGrid-selectedRowCount {
+  visibility: hidden !important;
 }
