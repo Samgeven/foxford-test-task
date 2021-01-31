@@ -2,7 +2,20 @@ import { createStore, combineReducers } from 'redux';
 
 const initialState = {
   tableData: [],
-  selectedRows: []
+  selectedRows: [],
+  isLoading: false
+}
+
+export const setLoading = () => {
+  return {
+    type: 'isLoading/enable',
+  }
+}
+
+export const unsetLoading = () => {
+  return {
+    type: 'isLoading/disable',
+  }
 }
 
 export const setData = (dataArray) => {
@@ -16,6 +29,17 @@ export const setSelectedRows = (idArray) => {
   return {
     type: 'selectedRows/idArray',
     payload: idArray
+  }
+}
+
+const isLoadingReducer = (state = initialState.isLoading, action) => {
+  switch (action.type) {
+    case 'isLoading/enable':
+      return state = true
+    case 'isLoading/disable':
+      return state = false
+    default:
+      return state
   }
 }
 
@@ -38,8 +62,9 @@ const selectedRowsReducer = (state = initialState.selectedRows, action) => {
 }
 
 const reducers = combineReducers({
-  selectedRowsReducer,
-  tableDataReducer
+  selectedRows: selectedRowsReducer,
+  tableData: tableDataReducer,
+  isLoading: isLoadingReducer
 })
 
 export const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

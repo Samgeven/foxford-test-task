@@ -1,63 +1,21 @@
 import { DataGrid } from "@material-ui/data-grid";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedRows } from '../store/store'
+import { setSelectedRows, setData, setLoading, unsetLoading } from '../store/store'
 import './Table.css'
 
-let tableData = [
-  {
-    id: 1,
-    firstName: 'Сергей',
-    lastName: 'Иванов',
-    age: 21
-  },
-  {
-    id: 2,
-    firstName: 'Татьяна',
-    lastName: 'Петрова',
-    age: 23
-  },
-  {
-    id: 3,
-    firstName: 'Виктор',
-    lastName: 'Смирнов',
-    age: 28
-  },
-  {
-    id: 4,
-    firstName: 'Андрей',
-    lastName: 'Смирнов',
-    age: 22
-  },
-  {
-    id: 5,
-    firstName: 'Александр',
-    lastName: 'Иванов',
-    age: 30
-  },
-  {
-    id: 6,
-    firstName: 'Григорий',
-    lastName: 'Петров',
-    age: 28
-  },
-  {
-    id: 7,
-    firstName: 'Елена',
-    lastName: 'Иванова',
-    age: 29
-  }
-]
-
-const columns = [
-  { field: 'firstName', headerName: 'Имя', width: 130 },
-  { field: 'lastName', headerName: 'Фамилия', width: 130 },
-  { field: 'age', headerName: 'Возраст', width: 130 },
-]
-
-
 function Table() {
-  const selectedRowsData = useSelector(state => state.selectedRowsReducer);
+  //columns header setup for Material UI
+  const columns = [
+    { field: 'firstName', headerName: 'Имя', width: 130 },
+    { field: 'lastName', headerName: 'Фамилия', width: 130 },
+    { field: 'age', headerName: 'Возраст', width: 130 },
+  ]
+
+  // extracting state using helper-functions
+  const selectedRowsData = useSelector(state => state.selectedRows);
+  const tableData = useSelector(state => state.tableData);
+  const isLoading = useSelector(state => state.isLoading);
   const dispatch = useDispatch();
 
   const getFirstNameById = (arr) => {
@@ -69,6 +27,21 @@ function Table() {
     })
     return namesArr.join(', ');
   }
+
+  const fetchTableData = () => {
+    dispatch(setLoading())
+    return fetch('https://raw.githubusercontent.com/Samgeven/foxford-test-task/master/src/data/users.json')
+    .then(response => response.json())
+    .then(json => {
+      dispatch(setData(json))
+      dispatch(unsetLoading())
+    })
+  }
+
+  // fetching table data upon component mounted
+  useEffect(() => {
+    fetchTableData()
+  }, []);
 
   return (
     <div className="Table" style={{ height: 500, width: '100%' }}>
@@ -82,6 +55,7 @@ function Table() {
         disableColumnMenu 
         checkboxSelection
         hideFooterRowCount
+        loading={isLoading}
         onSelectionChange={newSelection => {
           dispatch(setSelectedRows(newSelection.rowIds))
         }}
