@@ -7,9 +7,9 @@ import './Table.css'
 function Table() {
   //columns header setup for Material UI
   const columns = [
-    { field: 'firstName', headerName: 'Имя', width: 130 },
-    { field: 'lastName', headerName: 'Фамилия', width: 130 },
-    { field: 'age', headerName: 'Возраст', width: 130 },
+    { field: 'firstName', headerName: 'Имя', width: 150 },
+    { field: 'lastName', headerName: 'Фамилия', width: 150 },
+    { field: 'age', headerName: 'Возраст', width: 150 },
   ]
 
   // extracting state using helper-functions
@@ -34,6 +34,10 @@ function Table() {
     .then(response => response.json())
     .then(json => {
       dispatch(setData(json))
+      dispatch(unsetLoading())
+    })
+    .catch(err => {
+      console.log(err);
       dispatch(unsetLoading())
     })
   }
